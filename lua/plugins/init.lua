@@ -1,132 +1,84 @@
+-- Plugin Specifications
+-- Each plugin is configured in its own file under lua/plugins/configs/
+
 return {
-    {
-        "stevearc/conform.nvim",
-        event = "BufWritePre", -- Enable format on save
-        opts = require "configs.conform",
+  -- Formatter (conform.nvim)
+  {
+    "stevearc/conform.nvim",
+    event = "BufWritePre",
+    opts = require "configs.conform",
+  },
+
+  -- LSP Configuration
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      require "configs.lspconfig"
+    end,
+  },
+
+  -- Treesitter - Syntax highlighting and parsing
+  {
+    "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
+    opts = function()
+      return require "plugins.configs.treesitter"
+    end,
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
+
+  -- Auto-close HTML/JSX tags
+  {
+    "windwp/nvim-ts-autotag",
+    ft = {
+      "html",
+      "javascript",
+      "typescript",
+      "javascriptreact",
+      "typescriptreact",
+      "svelte",
+      "vue",
+      "tsx",
+      "jsx",
+      "xml",
+      "php",
+      "markdown",
     },
+    config = function()
+      local config = require "plugins.configs.autotag"
+      require("nvim-ts-autotag").setup(config.opts)
+    end,
+  },
 
-    {
-        "neovim/nvim-lspconfig",
-        config = function()
-            require "configs.lspconfig"
-        end,
+  -- Rust tooling
+  {
+    "rust-lang/rust.vim",
+    ft = "rust",
+    init = function()
+      local config = require "plugins.configs.rust"
+      config.init()
+    end,
+  },
+
+  -- Better diagnostics viewer
+  {
+    "folke/trouble.nvim",
+    cmd = "Trouble",
+    keys = {
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>",              desc = "Diagnostics (Trouble)" },
+      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+      { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>",      desc = "Symbols (Trouble)" },
+      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>",                  desc = "Location List (Trouble)" },
+      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>",                   desc = "Quickfix List (Trouble)" },
     },
-
-    {
-        "nvim-treesitter/nvim-treesitter",
-        opts = {
-            ensure_installed = {
-                -- Core
-                "vim",
-                "lua",
-                "vimdoc",
-                "luadoc",
-                "printf",
-
-                -- Web Development (JS/TS/React/Next/Vite/Tailwind)
-                "html",
-                "css",
-                "scss",
-                "javascript",
-                "typescript",
-                "tsx",
-                "jsx",
-                "json",
-                "jsonc",
-                "graphql",
-
-                -- Systems Programming
-                "rust",
-                "toml", -- Rust Cargo.toml
-                "c",
-                "cpp",
-                "cmake",
-
-                -- Python
-                "python",
-
-                -- Nix
-                "nix",
-
-                -- Documentation
-                "markdown",
-                "markdown_inline",
-                "latex",
-                "bibtex",
-
-                -- Other useful
-                "bash",
-                "yaml",
-                "regex",
-                "gitignore",
-                "gitcommit",
-                "diff",
-            },
-
-            highlight = {
-                enable = true,
-                use_languagetree = true,
-            },
-
-            indent = {
-                enable = true,
-            },
-
-            -- Enable incremental selection
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = "<C-space>",
-                    node_incremental = "<C-space>",
-                    scope_incremental = false,
-                    node_decremental = "<bs>",
-                },
-            },
-
-            -- Enable text objects
-            textobjects = {
-                select = {
-                    enable = true,
-                    lookahead = true,
-                },
-            },
-        },
-    },
-
-    -- Additional useful plugins for development
-    {
-        "windwp/nvim-ts-autotag",
-        ft = {
-            "html",
-            "javascript",
-            "typescript",
-            "javascriptreact",
-            "typescriptreact",
-            "xml",
-        },
-        config = function()
-            require("nvim-ts-autotag").setup()
-        end,
-    },
-
-    -- LSPSaga removed due to deprecated API warnings in Neovim 0.11+
-    -- Built-in LSP UI is excellent, no need for additional plugin
-
-    -- Rust-specific tools
-    {
-        "rust-lang/rust.vim",
-        ft = "rust",
-        init = function()
-            vim.g.rustfmt_autosave = 1
-            vim.g.rustfmt_emit_files = 1
-            vim.g.rustfmt_fail_silently = 0
-        end,
-    },
-
-    -- Better diagnostics
-    {
-        "folke/trouble.nvim",
-        cmd = "Trouble",
-        opts = {},
-    },
+    opts = function()
+      local config = require "plugins.configs.trouble"
+      return config.opts
+    end,
+  },
 }
