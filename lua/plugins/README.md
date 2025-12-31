@@ -6,46 +6,50 @@ This directory contains all plugin specifications and their configurations.
 
 ```
 plugins/
-├── init.lua          # Main plugin specifications (loaded by lazy.nvim)
-└── configs/          # Individual plugin configurations
-    ├── treesitter.lua  # Treesitter syntax highlighting
-    ├── autotag.lua     # Auto-close HTML/JSX tags
-    ├── trouble.lua     # Diagnostics viewer
-    └── rust.lua        # Rust-specific tooling
+├── init.lua           # Simple plugins with minimal configuration
+├── treesitter.lua     # Treesitter syntax highlighting (complex config)
+├── trouble.lua        # Trouble diagnostics viewer (complex config)
+└── README.md          # This file
 ```
+
+**Philosophy:**
+- **Simple plugins** (minimal config) → `init.lua`
+- **Complex plugins** (extensive config) → Separate files
 
 ## 📦 Installed Plugins
 
 ### Core Functionality
+
+#### Formatting
+- **stevearc/conform.nvim** - Async formatter
+  - Configuration: `lua/configs/conform.lua`
+  - Event: `BufWritePre`
+  - Auto-format on save enabled
 
 #### LSP Configuration
 - **neovim/nvim-lspconfig** - Language Server Protocol support
   - Configuration: `lua/configs/lspconfig.lua`
   - Language-specific configs: `lua/configs/lsp/*.lua`
 
-#### Formatting
-- **stevearc/conform.nvim** - Async formatter
-  - Configuration: `lua/configs/conform.lua`
-  - Auto-format on save enabled
-
 ### Syntax & Parsing
 
 #### Treesitter
 - **nvim-treesitter/nvim-treesitter** - Syntax highlighting and parsing
-  - Configuration: `lua/plugins/configs/treesitter.lua`
+  - Configuration: `lua/plugins/treesitter.lua`
   - Auto-install enabled
   - Parsers: JS/TS/React/Rust/C++/Python/Nix/Markdown/LaTeX/etc.
+  - Features: Syntax highlighting, indentation, incremental selection, text objects
 
 ### Language-Specific
 
 #### Web Development
 - **windwp/nvim-ts-autotag** - Auto-close HTML/JSX tags
-  - Configuration: `lua/plugins/configs/autotag.lua`
+  - Configuration: `lua/plugins/init.lua` (simple config)
   - Supports: HTML, JSX, TSX, Vue, Svelte, XML
 
 #### Rust
 - **rust-lang/rust.vim** - Rust tooling
-  - Configuration: `lua/plugins/configs/rust.lua`
+  - Configuration: `lua/plugins/init.lua` (simple config)
   - Rustfmt on save enabled
   - Edition 2021 support
 
@@ -53,47 +57,70 @@ plugins/
 
 #### Diagnostics
 - **folke/trouble.nvim** - Better diagnostics viewer
-  - Configuration: `lua/plugins/configs/trouble.lua`
-  - Keymaps: `<leader>xx`, `<leader>xX`, `<leader>cs`
+  - Configuration: `lua/plugins/trouble.lua`
+  - Keymaps: `<leader>xx`, `<leader>xX`, `<leader>cs`, `<leader>xL`, `<leader>xQ`
 
 ## 🎯 Adding New Plugins
 
-### 1. Add Plugin Specification
+### Simple Plugin (in init.lua)
 
-Edit `lua/plugins/init.lua`:
+Add to `lua/plugins/init.lua`:
 
 ```lua
 {
     "author/plugin-name",
-    event = "VeryLazy",  -- or ft, cmd, keys, etc.
-    opts = function()
-        return require "plugins.configs.myplugin"
-    end,
-}
-```
-
-### 2. Create Configuration File
-
-Create `lua/plugins/configs/myplugin.lua`:
-
-```lua
--- My Plugin Configuration
--- Description of what it does
-
-return {
+    event = "VeryLazy",
     opts = {
-        -- Plugin options here
         setting1 = true,
         setting2 = "value",
     },
 }
 ```
 
-### 3. Reload Configuration
+### Complex Plugin (separate file)
 
-```vim
-:Lazy reload
+1. Create `lua/plugins/myplugin.lua`:
+
+```lua
+-- MyPlugin Configuration
+-- Description of what it does
+
+return {
+    "author/plugin-name",
+    event = "VeryLazy",
+    
+    opts = {
+        -- Extensive configuration here
+        feature1 = {
+            enable = true,
+            setting = "value",
+        },
+        feature2 = {
+            -- More settings...
+        },
+    },
+    
+    config = function(_, opts)
+        require("plugin-name").setup(opts)
+    end,
+}
 ```
+
+2. The plugin will be auto-loaded by lazy.nvim (no need to require it in init.lua)
+
+### When to Use Separate Files?
+
+Create a separate file when:
+- ✅ Plugin has 20+ lines of configuration
+- ✅ Multiple features need detailed setup
+- ✅ Keymaps are defined within plugin spec
+- ✅ Custom functions or callbacks
+- ✅ Complex `opts` table
+
+Keep in `init.lua` when:
+- ✅ Plugin has < 10 lines of config
+- ✅ Simple `opts` or single `init` function
+- ✅ Minimal or no configuration needed
 
 ## 📚 Plugin Loading Events
 
@@ -105,48 +132,42 @@ Plugins use different loading strategies for optimal performance:
 - **ft = "filetype"** - Load for specific filetypes (Rust.vim, autotag)
 - **keys = { ... }** - Load when keybinding is pressed (Trouble)
 
-## 🔧 Configuration Files
+## 🔧 Current Plugin Structure
 
-Each plugin configuration file should:
-
-1. **Return a table** with plugin options
-2. **Include comments** explaining settings
-3. **Document keymaps** if applicable
-4. **Be self-contained** - no external dependencies
-
-### Example Structure
-
+### init.lua (Simple Configs)
 ```lua
--- Plugin Name Configuration
--- Brief description
-
 return {
+    { "plugin1", opts = { ... } },  -- < 10 lines
+    { "plugin2", init = function() ... end },
+    { "plugin3", ft = "rust" },
+}
+```
+
+### treesitter.lua (Complex Config)
+```lua
+return {
+    "nvim-treesitter/nvim-treesitter",
     opts = {
-        -- Core settings
-        enabled = true,
-        
-        -- Feature flags
-        feature1 = {
-            enable = true,
-            option = "value",
-        },
-        
-        -- Keymaps (if applicable)
-        keys = {
-            ["<key>"] = "action",
-        },
+        ensure_installed = { ... },  -- 50+ parsers
+        highlight = { ... },
+        indent = { ... },
+        incremental_selection = { ... },
+        textobjects = { ... },
     },
-    
-    -- Optional init function
-    init = function()
-        -- Pre-load setup
-    end,
-    
-    -- Optional config function
-    config = function(_, opts)
-        -- Post-load setup
-        require("plugin").setup(opts)
-    end,
+}
+```
+
+### trouble.lua (Complex Config)
+```lua
+return {
+    "folke/trouble.nvim",
+    keys = { ... },  -- Multiple keybindings
+    opts = {
+        -- 50+ lines of configuration
+        position = "bottom",
+        modes = { ... },
+        keys = { ... },
+    },
 }
 ```
 
@@ -169,7 +190,7 @@ See `:Lazy` for full list.
 ## 💡 Tips
 
 1. **Lazy Loading** - Use `event`, `cmd`, `ft`, or `keys` to lazy load plugins
-2. **Configuration** - Keep configs in separate files for maintainability
+2. **Organization** - Simple plugins in `init.lua`, complex ones in separate files
 3. **Dependencies** - Use `dependencies = { ... }` for plugin dependencies
 4. **Building** - Use `build = "command"` for post-install build steps
 5. **Priority** - Use `priority = 1000` for plugins that must load first
@@ -193,12 +214,15 @@ See `:Lazy` for full list.
 
 ## 🎨 Plugin Configuration Best Practices
 
-1. **Modularity** - One file per plugin
-2. **Documentation** - Comment all non-obvious settings
-3. **Performance** - Use lazy loading when possible
-4. **Defaults** - Only override what's necessary
-5. **Testing** - Test configuration after changes
+1. **Modularity** - Separate files for complex configs
+2. **Simplicity** - Keep simple configs in init.lua
+3. **Documentation** - Comment all non-obvious settings
+4. **Performance** - Use lazy loading when possible
+5. **Defaults** - Only override what's necessary
+6. **Testing** - Test configuration after changes
 
 ---
 
-**Note**: All plugin configurations use the `opts` pattern for lazy.nvim compatibility. This allows lazy.nvim to automatically call `plugin.setup(opts)` with the provided options.
+**Structure**: Flat organization with separate files only for complex plugins
+**Auto-loading**: All `.lua` files in this directory are automatically loaded by lazy.nvim
+**No imports needed**: Just create a file and return the plugin spec!
