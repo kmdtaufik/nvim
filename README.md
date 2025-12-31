@@ -435,8 +435,3 @@ To update NvChad and plugins:
 ```vim
 :Lazy sync
 ```
-
-## 📜 License
-
-This configuration is based on NvChad (Apache 2.0 License).
-
