@@ -14,9 +14,12 @@
     - [LSP Configuration](#lsp-configuration)
     - [Formatting](#formatting)
     - [Treesitter](#treesitter)
+    - [Git Integration (Lazygit)](#git-integration-lazygit)
     - [Additional Plugins](#additional-plugins)
   - [⌨️ Key Mappings](#️-key-mappings)
+    - [Git & Lazygit](#git-lazygit)
     - [General](#general)
+    - [Git & Lazygit](#git-lazygit)
     - [LSP](#lsp)
     - [Formatting](#formatting-1)
     - [Diagnostics](#diagnostics)
@@ -154,13 +157,36 @@ marksman, markdownlint-cli, texlab, tectonic
 - ✅ Code folding
 - ✅ Auto-tag closing (HTML/JSX)
 
+### Git Integration (Lazygit)
+
+- ✅ **Lazygit** - Beautiful terminal UI for git (via snacks.nvim)
+- ✅ Floating window integration
+- ✅ Git browse (open files in browser)
+- ✅ File history viewer
+- ✅ Custom theme matching Neovim colors
+- ✅ Terminal management for general shell commands
+
 ### Additional Plugins
 
 - ✅ **Trouble** - Better diagnostics viewer
 - ✅ **nvim-ts-autotag** - Auto-close HTML/JSX tags
 - ✅ **rust.vim** - Additional Rust tooling
+- ✅ **snacks.nvim** - Utilities (lazygit, terminal, notifications, toggles)
 
 ## ⌨️ Key Mappings
+
+### Git & Lazygit
+
+| Key           | Mode   | Action                                |
+| ------------- | ------ | ------------------------------------- |
+| `<leader>gg`  | Normal | Open Lazygit (cwd)                    |
+| `<leader>gG`  | Normal | Open Lazygit (current file dir)       |
+| `<leader>gf`  | Normal | Lazygit - Current File History        |
+| `<leader>gl`  | Normal | Lazygit - Git Log                     |
+| `<leader>gb`  | Normal, Visual | Git Browse (open in browser)   |
+| `<leader>gY`  | Normal, Visual | Git Browse (copy URL)          |
+
+> 📖 **See [LAZYGIT_SETUP.md](LAZYGIT_SETUP.md) for complete lazygit documentation and usage guide**
 
 ### General
 

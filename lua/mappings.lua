@@ -95,6 +95,10 @@ map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
 -- Quick quit
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 
+-- Git keymaps (lazygit integration via snacks.nvim)
+-- Note: Main lazygit keymaps are defined in lua/plugins/lazygit.lua
+-- Additional git keymaps can be added here
+
 -- LaTeX specific
 map("n", "<leader>lb", "<cmd>TexlabBuild<cr>", { desc = "LaTeX Build" })
 map("n", "<leader>lf", "<cmd>TexlabForward<cr>", { desc = "LaTeX Forward search" })
