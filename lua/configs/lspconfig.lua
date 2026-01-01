@@ -29,6 +29,9 @@ require("configs.lsp.markdown")
 -- LaTeX (Texlab)
 require("configs.lsp.latex")
 
+-- Copilot (GitHub Copilot LSP for sidekick.nvim)
+require("configs.lsp.copilot")
+
 -- Note: Each language configuration file:
 -- 1. Defines vim.lsp.config.<server_name> with full settings
 -- 2. Calls vim.lsp.enable() for that server
