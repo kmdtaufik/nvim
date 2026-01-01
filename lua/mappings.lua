@@ -22,16 +22,16 @@ map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "LSP Code action" })
 
 -- Formatting
 map("n", "<leader>fm", function()
-    require("conform").format({ async = true, lsp_fallback = true })
+  require("conform").format({ async = true, lsp_fallback = true })
 end, { desc = "Format file" })
 
 map("v", "<leader>fm", function()
-    require("conform").format({ async = true, lsp_fallback = true })
+  require("conform").format({ async = true, lsp_fallback = true })
 end, { desc = "Format selection" })
 
 -- Diagnostics
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+-- map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+-- map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic in float" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Add diagnostics to location list" })
 map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostic location list" })
@@ -51,14 +51,14 @@ map("n", "<leader>rt", "<cmd>RustTest<cr>", { desc = "Rust Test" })
 map("n", "gh", vim.lsp.buf.references, { desc = "LSP Find references" })
 map("n", "<leader>o", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "LSP Document symbols" })
 map("n", "gp", function()
-    -- Peek definition in floating window
-    local params = vim.lsp.util.make_position_params()
-    vim.lsp.buf_request(0, 'textDocument/definition', params, function(_, result)
-        if result == nil or vim.tbl_isempty(result) then
-            return
-        end
-        vim.lsp.util.preview_location(result[1], { border = 'rounded' })
-    end)
+  -- Peek definition in floating window
+  local params = vim.lsp.util.make_position_params()
+  vim.lsp.buf_request(0, 'textDocument/definition', params, function(_, result)
+    if result == nil or vim.tbl_isempty(result) then
+      return
+    end
+    vim.lsp.util.preview_location(result[1], { border = 'rounded' })
+  end)
 end, { desc = "LSP Peek definition" })
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "LSP Line diagnostics" })
 
@@ -98,6 +98,10 @@ map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 -- Git keymaps (lazygit integration via snacks.nvim)
 -- Note: Main lazygit keymaps are defined in lua/plugins/lazygit.lua
 -- Additional git keymaps can be added here
+
+-- Buffer navigation with Ctrl-Tab (since Tab is used by Sidekick in insert mode)
+-- map("n", "<C-Tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+-- map("n", "<C-S-Tab>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 
 -- LaTeX specific
 map("n", "<leader>lb", "<cmd>TexlabBuild<cr>", { desc = "LaTeX Build" })
