@@ -50,7 +50,7 @@ return {
 
   -- 3. Mason Installation
   {
-    "mason/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
         "oxlint",
